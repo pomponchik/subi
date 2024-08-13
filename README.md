@@ -90,7 +90,6 @@ By default, the `stdout` and `stderr` of the subprocess are forwarded to the `st
 You can override the output functions for `stdout` and `stderr`. To do this, you need to pass as arguments `stdout_callback` and `stderr_callback`, respectively, some functions that accept a string as an argument. For example, you can color the output (the code example uses the [`termcolor`](https://github.com/termcolor/termcolor) library):
 
 ```python
-import suby
 from termcolor import colored
 
 def my_new_stdout(string: str) -> None:
@@ -117,7 +116,6 @@ By default, `suby` does not log command execution. However, you can pass a logge
 
 ```python
 import logging
-import suby
 
 logging.basicConfig(
     level=logging.INFO,
@@ -152,8 +150,6 @@ By default, `suby` raises exceptions in three cases:
 1. If the command you are calling ended with a return code not equal to `0`. In this case, you will see an exception `suby.RunningCommandError`:
 
 ```python
-import suby
-
 try:
     suby('python -c 1/0')
 except suby.RunningCommandError as e:
@@ -194,7 +190,6 @@ So, you can pass your cancellation tokens to `suby`. By default, canceling a tok
 
 ```python
 from random import randint
-import suby
 from cantok import ConditionToken
 
 token = ConditionToken(lambda: randint(1, 1000) == 7)  # This token will be cancelled when a random unlikely event occurs.
@@ -217,8 +212,6 @@ print(suby('python -c "import time; time.sleep(10_000)"', token=token, catch_exc
 You can set a timeout for `suby`. It must be an integer greater than zero, which indicates the number of seconds that the subprocess can continue to run. If the timeout expires before the subprocess completes, an exception will be raised:
 
 ```python
-import suby
-
 suby('python -c "import time; time.sleep(10_000)"', timeout=1)
 # > cantok.errors.TimeoutCancellationError: The timeout of 1 seconds has expired.
 ```
