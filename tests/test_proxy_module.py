@@ -4,6 +4,7 @@ from time import perf_counter
 from io import StringIO
 from contextlib import redirect_stdout, redirect_stderr
 from pathlib import Path
+import platform
 
 import pytest
 import full_match
@@ -517,6 +518,7 @@ def test_multiple_args_without_split(command):
     assert result.returncode == 0
 
 
+@pytest.mark.skipif(platform.system() == 'Windows', reason='There is no errors like this in mslex.')
 @pytest.mark.parametrize(
     ['command', 'exception_message'],
     [
