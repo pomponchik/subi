@@ -518,6 +518,7 @@ def test_multiple_args_without_split(command):
     assert result.returncode == 0
 
 
+# TODO: delete this skip when argument checking will be added to mslex.
 @pytest.mark.skipif(platform.system() == 'Windows', reason='There is no errors like this in mslex.')
 @pytest.mark.parametrize(
     ['command', 'exception_message'],
