@@ -269,8 +269,8 @@ def test_logging_with_expired_timeout_without_catching_exceptions(command, first
 @pytest.mark.parametrize(
     ['command', 'first_log_message', 'second_log_message'],
     [
-        ((sys.executable, f'-c 1/0'), f'The beginning of the execution of the command "{sys.executable} -c 1/0".', f'Error when executing the command "{sys.executable} -c 1/0".'),
-        ((f'python -c 1/0',), f'The beginning of the execution of the command "python -c 1/0".', f'Error when executing the command "python -c 1/0".'),
+        ((sys.executable, '-c 1/0'), f'The beginning of the execution of the command "{sys.executable} -c 1/0".', f'Error when executing the command "{sys.executable} -c 1/0".'),
+        (('python -c 1/0',), 'The beginning of the execution of the command "python -c 1/0".', 'Error when executing the command "python -c 1/0".'),
     ]
 )
 def test_logging_with_exception_without_catching_exceptions(command, first_log_message, second_log_message):
