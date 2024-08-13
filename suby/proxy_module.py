@@ -102,8 +102,8 @@ class ProxyModule(sys.modules[__name__].__class__):  # type: ignore[misc]
                     try:
                         for sub_argument in shlex_split(argument):
                             converted_arguments.append(sub_argument)
-                    except Exception as e:
-                        raise WrongCommandError(f'The expression "{argument}" cannot be parsed.') from e
+                    except Exception as e:  # pragma: no cover
+                        raise WrongCommandError(f'The expression "{argument}" cannot be parsed.') from e  # pragma: no cover
                 else:
                     converted_arguments.append(argument)
             else:
