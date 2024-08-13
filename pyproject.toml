@@ -12,7 +12,7 @@ description = 'Slightly simplified subprocesses'
 readme = "README.md"
 requires-python = ">=3.7"
 dependencies = [
-    'emptylog>=0.0.7',
+    'emptylog>=0.0.8',
     'cantok>=0.0.29',
     'mslex>=1.2.0 ; platform_system == "Windows"',
 ]
