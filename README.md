@@ -45,7 +45,7 @@ And use:
 ```python
 import suby
 
-suby('python', '-c', 'print("hello, world!")')
+suby('python -c "print(\'hello, world!\')"')
 # > hello, world!
 ```
 
@@ -69,7 +69,7 @@ from suby import suby
 Let's try to call `suby`. You can use strings or [`pathlib.Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path) objects as positional arguments, but now we call it with only simple strings:
 
 ```python
-result = suby('python', '-c', 'print("hello, world!")')
+result = suby('python -c "print(\'hello, world!\')"')
 print(result)
 # > SubprocessResult(id='e9f2d29acb4011ee8957320319d7541c', stdout='hello, world!\n', stderr='', returncode=0, killed_by_token=False)
 ```
@@ -96,7 +96,7 @@ from termcolor import colored
 def my_new_stdout(string: str) -> None:
     print(colored(string, 'red'), end='')
 
-suby('python', '-c', 'print("hello, world!")', stdout_callback=my_new_stdout)
+suby('python -c "print(\'hello, world!\')"', stdout_callback=my_new_stdout)
 # > hello, world!
 # You can't see it here, but believe me, if you repeat the code at home, the output in the console will be red!
 ```
@@ -104,7 +104,7 @@ suby('python', '-c', 'print("hello, world!")', stdout_callback=my_new_stdout)
 You can also completely disable the output by passing `True` as the `catch_output` parameter:
 
 ```python
-suby('python', '-c', 'print("hello, world!")', catch_output=True)
+suby('python -c "print(\'hello, world!\')"', catch_output=True)
 # There's nothing here.
 ```
 
@@ -127,7 +127,7 @@ logging.basicConfig(
     ]
 )
 
-suby('python', '-c', 'pass', logger=logging.getLogger('logger_name'))
+suby('python -c pass', logger=logging.getLogger('logger_name'))
 # > 2024-02-22 02:15:08,155 [INFO] The beginning of the execution of the command "python -c pass".
 # > 2024-02-22 02:15:08,190 [INFO] The command "python -c pass" has been successfully executed.
 ```
@@ -135,7 +135,7 @@ suby('python', '-c', 'pass', logger=logging.getLogger('logger_name'))
 The message about the start of the command execution is always done with the `INFO` [level](https://docs.python.org/3.8/library/logging.html#logging-levels). If the command is completed successfully, the end message will also be with the `INFO` level. And if not - `ERROR`:
 
 ```python
-suby('python', '-c', 'raise ValueError', logger=logging.getLogger('logger_name'), catch_exceptions=True, catch_output=True)
+suby('python -c "raise ValueError"', logger=logging.getLogger('logger_name'), catch_exceptions=True, catch_output=True)
 # > 2024-02-22 02:20:25,549 [INFO] The beginning of the execution of the command "python -c "raise ValueError"".
 # > 2024-02-22 02:20:25,590 [ERROR] Error when executing the command "python -c "raise ValueError"".
 ```
@@ -155,7 +155,7 @@ By default, `suby` raises exceptions in three cases:
 import suby
 
 try:
-    suby('python', '-c', '1/0')
+    suby('python -c 1/0')
 except suby.RunningCommandError as e:
     print(e)
     # > Error when executing the command "python -c 1/0".
@@ -168,7 +168,7 @@ except suby.RunningCommandError as e:
 You can prevent `suby` from raising any exceptions. To do this, set the `catch_exceptions` parameter to `True`:
 
 ```python
-result = suby('python', '-c', 'import time; time.sleep(10_000)', timeout=1, catch_exceptions=True)
+result = suby('python -c "import time; time.sleep(10_000)"', timeout=1, catch_exceptions=True)
 print(result)
 # > SubprocessResult(id='c9125b90d03111ee9660320319d7541c', stdout='', stderr='', returncode=-9, killed_by_token=True)
 ```
@@ -177,7 +177,7 @@ Keep in mind that the full result of the subprocess call can also be found throu
 
 ```python
 try:
-    suby('python', '-c', 'import time; time.sleep(10_000)', timeout=1)
+    suby('python -c "import time; time.sleep(10_000)"', timeout=1)
 except suby.TimeoutCancellationError as e:
     print(e.result)
     # > SubprocessResult(id='a80dc26cd03211eea347320319d7541c', stdout='', stderr='', returncode=-9, killed_by_token=True)
@@ -198,7 +198,7 @@ import suby
 from cantok import ConditionToken
 
 token = ConditionToken(lambda: randint(1, 1000) == 7)  # This token will be cancelled when a random unlikely event occurs.
-suby('python', '-c', 'import time; time.sleep(10_000)', token=token)
+suby('python -c "import time; time.sleep(10_000)"', token=token)
 # > cantok.errors.ConditionCancellationError: The cancellation condition was satisfied.
 ```
 
@@ -206,7 +206,7 @@ However, if you pass the `catch_exceptions=True` argument, the exception [will n
 
 ```python
 token = ConditionToken(lambda: randint(1, 1000) == 7)
-print(suby('python', '-c', 'import time; time.sleep(10_000)', token=token, catch_exceptions=True))
+print(suby('python -c "import time; time.sleep(10_000)"', token=token, catch_exceptions=True))
 # > SubprocessResult(id='e92ccd54d24b11ee8376320319d7541c', stdout='', stderr='', returncode=-9, killed_by_token=True)
 ```
 
@@ -219,7 +219,7 @@ You can set a timeout for `suby`. It must be an integer greater than zero, which
 ```python
 import suby
 
-suby('python', '-c', 'import time; time.sleep(10_000)', timeout=1)
+suby('python -c "import time; time.sleep(10_000)"', timeout=1)
 # > cantok.errors.TimeoutCancellationError: The timeout of 1 seconds has expired.
 ```
 
@@ -229,7 +229,7 @@ The exception corresponding to this token was be reimported to `suby`:
 
 ```python
 try:
-    suby('python', '-c', 'import time; time.sleep(10_000)', timeout=1)
+    suby('python -c "import time; time.sleep(10_000)"', timeout=1)
 except suby.TimeoutCancellationError as e:  # As you can see, TimeoutCancellationError is available in the suby module.
     print(e)
     # > The timeout of 1 seconds has expired.
@@ -238,6 +238,6 @@ except suby.TimeoutCancellationError as e:  # As you can see, TimeoutCancellatio
 Just as with [regular cancellation tokens](#working-with-cancellation-tokens), you can prevent exceptions from being raised using the `catch_exceptions=True` argument:
 
 ```python
-print(suby('python', '-c', 'import time; time.sleep(10_000)', timeout=1, catch_exceptions=True))
+print(suby('python -c "import time; time.sleep(10_000)"', timeout=1, catch_exceptions=True))
 # > SubprocessResult(id='ea88c518d25011eeb25e320319d7541c', stdout='', stderr='', returncode=-9, killed_by_token=True)
 ```
