@@ -11,7 +11,7 @@ from cantok import TimeoutCancellationError, ConditionCancellationError, Conditi
 from emptylog import MemoryLogger
 
 import suby
-from suby import RunningCommandError
+from suby import RunningCommandError, WrongCommandError
 
 
 @pytest.mark.parametrize(
@@ -515,3 +515,16 @@ def test_multiple_args_without_split(command):
     assert result.stdout == 'kek\n'
     assert result.stderr == ''
     assert result.returncode == 0
+
+
+@pytest.mark.parametrize(
+    ['command', 'exception_message'],
+    [
+        ((Path(sys.executable), '-c "'), 'The expression "-c "" cannot be parsed.'),
+        ((sys.executable, '-c "'), 'The expression "-c "" cannot be parsed.'),
+        (('python -c "',), 'The expression "python -c "" cannot be parsed.'),
+    ]
+)
+def test_wrong_command(command, exception_message):
+    with pytest.raises(WrongCommandError, match=full_match(exception_message)):
+        suby(*command)
