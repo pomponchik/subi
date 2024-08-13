@@ -499,3 +499,19 @@ def test_full_import_form():
     from suby import suby as local_suby
 
     assert suby is local_suby
+
+
+@pytest.mark.parametrize(
+    ['command'],
+    [
+        ((Path(sys.executable), '-c', 'print(\'kek\')'),),
+        ((sys.executable, '-c', 'print(\'kek\')'),),
+        (('python', '-c', 'print(\'kek\')'),),
+    ]
+)
+def test_multiple_args_without_split(command):
+    result = suby(*command, split=False)
+
+    assert result.stdout == 'kek\n'
+    assert result.stderr == ''
+    assert result.returncode == 0
