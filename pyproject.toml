@@ -13,7 +13,7 @@ readme = "README.md"
 requires-python = ">=3.7"
 dependencies = [
     'emptylog>=0.0.7',
-    'cantok>=0.0.24',
+    'cantok>=0.0.29',
     'mslex>=1.2.0 ; platform_system == "Windows"',
 ]
 classifiers = [
