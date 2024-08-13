@@ -11,8 +11,8 @@ from cantok import AbstractToken, TimeoutToken, DefaultToken, CancellationError
 
 try:
     from oslex import split as shlex_split  # type: ignore[import, unused-ignore]
-except ImportError:
-    from shlex import split as shlex_split
+except ImportError:  # pragma: no cover
+    from shlex import split as shlex_split  # pragma: no cover
 
 from suby.errors import RunningCommandError
 from suby.subprocess_result import SubprocessResult
