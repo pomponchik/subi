@@ -10,7 +10,7 @@ from emptylog import EmptyLogger, LoggerProtocol
 from cantok import AbstractToken, TimeoutToken, DefaultToken, CancellationError
 
 try:
-    from mslex import split as shlex_split
+    from oslex import split as shlex_split
 except ImportError:
     from shlex import split as shlex_split
 
