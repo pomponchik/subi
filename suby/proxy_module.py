@@ -14,7 +14,7 @@ try:
 except ImportError:  # pragma: no cover
     from shlex import split as shlex_split  # pragma: no cover
 
-from suby.errors import RunningCommandError
+from suby.errors import RunningCommandError, WrongCommandError
 from suby.subprocess_result import SubprocessResult
 from suby.callbacks import stdout_with_flush, stderr_with_flush
 
@@ -41,6 +41,7 @@ class ProxyModule(sys.modules[__name__].__class__):  # type: ignore[misc]
             token += TimeoutToken(timeout)
 
         converted_arguments = self.convert_arguments(arguments, split)
+
         arguments_string_representation = ' '.join([argument if ' ' not in argument else f'"{argument}"' for argument in converted_arguments])
 
         stdout_buffer: List[str] = []
@@ -98,8 +99,11 @@ class ProxyModule(sys.modules[__name__].__class__):  # type: ignore[misc]
                 converted_arguments.append(str(argument))
             elif isinstance(argument, str):
                 if split:
-                    for sub_argument in shlex_split(argument):
-                        converted_arguments.append(sub_argument)
+                    try:
+                        for sub_argument in shlex_split(argument):
+                            converted_arguments.append(sub_argument)
+                    except Exception as e:
+                        raise WrongCommandError(f'The expression "{argument}" cannot be parsed.') from e
                 else:
                     converted_arguments.append(argument)
             else:
