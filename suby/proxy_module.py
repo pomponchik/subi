@@ -102,7 +102,6 @@ class ProxyModule(sys.modules[__name__].__class__):  # type: ignore[misc]
                     try:
                         for sub_argument in shlex_split(argument):
                             converted_arguments.append(sub_argument)
-                    # TODO: delete this no cover comments when argument checking will be added to mslex.
                     except Exception as e:  # pragma: no cover
                         raise WrongCommandError(f'The expression "{argument}" cannot be parsed.') from e  # pragma: no cover
                 else:
