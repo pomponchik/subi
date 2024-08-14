@@ -10,9 +10,9 @@ from emptylog import EmptyLogger, LoggerProtocol
 from cantok import AbstractToken, TimeoutToken, DefaultToken, CancellationError
 
 try:
-    from oslex import split as shlex_split, join as shlex_join  # type: ignore[import, unused-ignore]
+    from oslex import split as shlex_split  # type: ignore[import, unused-ignore]
 except ImportError:  # pragma: no cover
-    from shlex import split as shlex_split, join as shlex_join  # pragma: no cover
+    from shlex import split as shlex_split  # pragma: no cover
 
 from suby.errors import RunningCommandError, WrongCommandError
 from suby.subprocess_result import SubprocessResult
@@ -42,7 +42,7 @@ class ProxyModule(sys.modules[__name__].__class__):  # type: ignore[misc]
 
         converted_arguments = self.convert_arguments(arguments, split)
 
-        arguments_string_representation = shlex_join(converted_arguments)
+        arguments_string_representation = ' '.join([argument if ' ' not in argument else f'"{argument}"' for argument in converted_arguments])
 
         stdout_buffer: List[str] = []
         stderr_buffer: List[str] = []
