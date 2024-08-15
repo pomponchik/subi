@@ -1,5 +1,7 @@
 import re
 import sys
+import json
+from os import environ
 from time import perf_counter
 from io import StringIO
 from contextlib import redirect_stdout, redirect_stderr
@@ -530,3 +532,7 @@ def test_multiple_args_without_split(command):
 def test_wrong_command(command, exception_message):
     with pytest.raises(WrongCommandError, match=full_match(exception_message)):
         suby(*command)
+
+
+def test_envs_for_subprocess_are_same_as_parent():
+    assert json.loads(suby('python3 -c "import os, json; print(json.dumps(dict(os.environ)))"').stdout) == environ
