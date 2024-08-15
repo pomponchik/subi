@@ -94,7 +94,7 @@ In most cases, you will not notice any differences in the parsing rules. For exa
 python -c "print(777)"
 ```
 
-... on any system it will be divided in this way:
+... on any system it will be splitted in this way:
 
 ```python
 ['python', '-c', 'print(777)']
