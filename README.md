@@ -86,21 +86,44 @@ We can see that it returns an object of the `SubprocessResult` class. It contain
 
 ## Command parsing
 
-Each command you use to call `suby` is passed to a special system call. Which one exactly depends on the operating system you are using. But regardless of the specific operating system, this system call usually accepts not one whole line of input, but a list of substrings. This means that somewhere under the hood, `suby` should cut the string you passed. The rules for this cutting are usually also different for different operating systems and depend on the specific shell you prefer. `suby` uses the CMD as a standard for windows and POSIX for POSIX-compatible systems.
+Each command you use to call `suby` is passed to a special system call. Which one exactly depends on the operating system you are using. But regardless of the specific operating system, this system call usually accepts not one whole line of input, but a list of substrings. This means that somewhere under the hood, `suby` should cut the string you passed. The rules for this cutting are usually also different for different operating systems and depend on the specific shell you prefer. `suby` uses the [CMD](https://en.wikipedia.org/wiki/Cmd.exe) as a standard for [Windows](https://en.wikipedia.org/wiki/Microsoft_Windows) and [POSIX](https://en.wikipedia.org/wiki/POSIX) for POSIX-compatible systems.
 
 In most cases, you will not notice any differences in the parsing rules. For example, the following line:
 
 ```bash
-python -c "print(\'hello, world!\')"
+python -c "print(777)"
 ```
 
+... on any system it will be divided in this way:
 
+```python
+['python', '-c', 'print(777)']
+```
 
-Under the hood, suby divides any command you give it into small segments.
+In some cases, for your convenience, you can pass several lines as arguments to suby, in which case each of them will be splitted:
 
-You can use strings or [`pathlib.Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path) objects as positional arguments for `suby`.
+```python
+suby('python -c', 'print(777)')
+# The command will be splitted in an identical way: ['python', '-c', 'print(777)']
+```
 
+You can pass not only strings to suby, but also [`pathlib.Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path) objects:
 
+```python
+import sys
+from pathlib import Path
+
+suby(Path(sys.executable), '-c print(777)')
+# This will work too.
+```
+
+If for some reason you want to disable the automatic splitting of strings into parts, pass `split=False`:
+
+```python
+suby('python', '-c', 'print(777)', split=False)
+```
+
+Of course, in this case, you will have to cut the command by yourself.
 
 
 ## Output
