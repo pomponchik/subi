@@ -25,6 +25,7 @@ Here is a small wrapper around the [subprocesses](https://docs.python.org/3/libr
 
 - [**Quick start**](#quick-start)
 - [**Run subprocess and look at the result**](#run-subprocess-and-look-at-the-result)
+- [**Command parsing**](#command-parsing)
 - [**Output**](#output)
 - [**Logging**](#logging)
 - [**Exceptions**](#exceptions)
@@ -66,7 +67,7 @@ If you use static type checking and get an error that it is impossible to call t
 from suby import suby
 ```
 
-Let's try to call `suby`. You can use strings or [`pathlib.Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path) objects as positional arguments, but now we call it with only simple strings:
+Let's try to call `suby`:
 
 ```python
 result = suby('python -c "print(\'hello, world!\')"')
@@ -81,6 +82,17 @@ We can see that it returns an object of the `SubprocessResult` class. It contain
 - **stderr** - a string containing the entire buffered stderr of the command being run.
 - **returncode** - an integer indicating the return code of the subprocess. `0` means that the process was completed successfully, the other options usually indicate something bad.
 - **killed_by_token** - a boolean flag indicating whether the subprocess was killed due to [token](https://cantok.readthedocs.io/en/latest/the_pattern/) cancellation.
+
+
+## Command parsing
+
+Each command you use to call suby is passed to a special system call. Which one exactly depends on the operating system you are using. But regardless of the specific operating system, this system call usually accepts not one whole line of input, but a list of substrings.
+
+Under the hood, suby divides any command you give it into small segments.
+
+You can use strings or [`pathlib.Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path) objects as positional arguments for `suby`.
+
+
 
 
 ## Output
