@@ -86,7 +86,7 @@ We can see that it returns an object of the `SubprocessResult` class. It contain
 
 ## Command parsing
 
-Each command you use to call `suby` is passed to a special system call. Which one exactly depends on the operating system you are using. But regardless of the specific operating system, this system call usually accepts not one whole line of input, but a list of substrings. This means that somewhere under the hood, `suby` should cut the string you passed. The rules for this cutting are usually also different for different operating systems and depend on the specific shell you prefer. `suby` uses the [CMD](https://en.wikipedia.org/wiki/Cmd.exe) as a standard for [Windows](https://en.wikipedia.org/wiki/Microsoft_Windows) and [POSIX](https://en.wikipedia.org/wiki/POSIX) for POSIX-compatible systems.
+Each command you use to call `suby` is passed to a special [system call](https://en.wikipedia.org/wiki/System_call). Which one exactly depends on the operating system you are using. But regardless of the specific operating system, this system call usually accepts not one whole line of input, but a list of substrings. This means that somewhere under the hood, `suby` should cut the string you passed. The rules for this cutting are usually also different for different operating systems and depend on the specific shell you prefer. `suby` uses the [CMD](https://en.wikipedia.org/wiki/Cmd.exe) as a standard for [Windows](https://en.wikipedia.org/wiki/Microsoft_Windows) and [POSIX](https://en.wikipedia.org/wiki/POSIX) for POSIX-compatible systems.
 
 In most cases, you will not notice any differences in the parsing rules. For example, the following line:
 
