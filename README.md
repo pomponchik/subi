@@ -91,20 +91,19 @@ Each command you use to call `suby` is passed to a special [system call](https:/
 In most cases, you will not notice any differences in the parsing rules. For example, the following line:
 
 ```bash
-python -c "print(777)"
+python -c "print('hello, world!')"
 ```
 
-... on any system it will be splitted in this way:
+... on Windows should be escaped like here:
 
 ```python
-['python', '-c', 'print(777)']
+suby('python -c "print^(\'hello,world^!\'^)"')
 ```
 
-In some cases, for your convenience, you can pass several lines as arguments to suby, in which case each of them will be splitted:
+... and on other systems like here:
 
 ```python
-suby('python -c', 'print(777)')
-# The command will be splitted in an identical way: ['python', '-c', 'print(777)']
+suby('python -c "print(\'hello, world!\')"')
 ```
 
 You can pass not only strings to suby, but also [`pathlib.Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path) objects:
