@@ -32,6 +32,10 @@ def test_run_hello_world_windows():
         result = suby('python -c "print^(\'hello, world^!\'^)"', catch_exceptions=True)
         print(result)
 
+    print(result)
+
+    print(stderr_buffer.getvalue())
+
     assert stderr_buffer.getvalue() == ''
     assert stdout_buffer.getvalue() == 'hello, world!\n'
 
