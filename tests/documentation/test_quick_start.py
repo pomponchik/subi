@@ -29,7 +29,7 @@ def test_run_hello_world_windows():
     stdout_buffer = StringIO()
 
     with redirect_stdout(stdout_buffer), redirect_stderr(stderr_buffer):
-        result = suby('python -c "print^(\'hello,world^!\'^)"')
+        result = suby('python -c "print^(\'hello, world^!\'^)"')
 
     assert stderr_buffer.getvalue() == ''
     assert stdout_buffer.getvalue() == 'hello, world!\n'
