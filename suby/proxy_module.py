@@ -9,7 +9,12 @@ from types import ModuleType
 from emptylog import EmptyLogger, LoggerProtocol
 from cantok import AbstractToken, TimeoutToken, DefaultToken, CancellationError
 
-from suby.errors import RunningCommandError
+try:
+    from oslex import split as shlex_split  # type: ignore[import, unused-ignore]
+except ImportError:  # pragma: no cover
+    from shlex import split as shlex_split  # pragma: no cover
+
+from suby.errors import RunningCommandError, WrongCommandError
 from suby.subprocess_result import SubprocessResult
 from suby.callbacks import stdout_with_flush, stderr_with_flush
 
@@ -24,6 +29,7 @@ class ProxyModule(sys.modules[__name__].__class__):  # type: ignore[misc]
         stdout_callback: Callable[[str], Any] = stdout_with_flush,
         stderr_callback: Callable[[str], Any] = stderr_with_flush,
         timeout: Optional[Union[int, float]] = None,
+        split: bool = True,
         token: AbstractToken = DefaultToken(),
     ) -> SubprocessResult:
         """
@@ -34,7 +40,8 @@ class ProxyModule(sys.modules[__name__].__class__):  # type: ignore[misc]
         elif timeout is not None:
             token += TimeoutToken(timeout)
 
-        converted_arguments = self.convert_arguments(arguments)
+        converted_arguments = self.convert_arguments(arguments, split)
+
         arguments_string_representation = ' '.join([argument if ' ' not in argument else f'"{argument}"' for argument in converted_arguments])
 
         stdout_buffer: List[str] = []
@@ -84,14 +91,21 @@ class ProxyModule(sys.modules[__name__].__class__):  # type: ignore[misc]
         return result
 
     @staticmethod
-    def convert_arguments(arguments: Tuple[Union[str, Path], ...]) -> List[str]:
+    def convert_arguments(arguments: Tuple[Union[str, Path], ...], split: bool) -> List[str]:
         converted_arguments = []
 
         for argument in arguments:
             if isinstance(argument, Path):
                 converted_arguments.append(str(argument))
             elif isinstance(argument, str):
-                converted_arguments.append(argument)
+                if split:
+                    try:
+                        for sub_argument in shlex_split(argument):
+                            converted_arguments.append(sub_argument)
+                    except Exception as e:  # pragma: no cover
+                        raise WrongCommandError(f'The expression "{argument}" cannot be parsed.') from e  # pragma: no cover
+                else:
+                    converted_arguments.append(argument)
             else:
                 raise TypeError(f'Only strings and pathlib.Path objects can be positional arguments when calling the suby function. You passed "{argument}" ({type(argument).__name__}).')
 
